@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerScript : MonoBehaviour
 {
@@ -19,8 +20,15 @@ public class PlayerScript : MonoBehaviour
 	public GameObject Camera;//camera object
 	
 	public bool nearTV;//check for if player is near TV
-	
-    
+
+    public Vector3 targetLocation;
+
+    public Touch touch;
+
+    public RawImage VHS;
+
+
+
     void Start()
     {
         rb = this.GetComponent<Rigidbody>();//gets the current objects rigidbody component
@@ -46,21 +54,50 @@ public class PlayerScript : MonoBehaviour
         }
     
 		//movement handling start		
-		if(Input.GetKeyDown("w") || fingerCount == 2 /*|| ControllerD-PadUp*/)
+		if(Input.GetKeyDown("w") || fingerCount == 1 /*|| ControllerD-PadUp*/)
 		{
-			Debug.Log(Camera.transform.forward * speed);
-			transform.position += new Vector3(Camera.transform.forward.x,0.0f, Camera.transform.forward.z) * speed;//moves player in the forward direction relative to their perspective and isolates out movement in the Y axis
+			Debug.Log("Yo" + Camera.transform.forward * speed);
+            //transform.position += new Vector3(Camera.transform.forward.x,0.0f, Camera.transform.forward.z) * speed;//moves player in the forward direction relative to their perspective and isolatesou movement in the Y axis
+            if (Physics.Raycast(transform.position, Camera.transform.TransformDirection(Vector3.forward),out RaycastHit hit, Mathf.Infinity))
+            {
+                if(hit.transform.tag == "Floor")
+                {
+                    targetLocation = hit.point;
+                    targetLocation += new Vector3(0, transform.localScale.y / 2, 0);
+                    transform.position = targetLocation;
+                    Debug.Log("hit");
+                }
+                else
+                {
+                    Debug.Log(hit.transform.name);
+                }
+            }
 		}
+
+        //if(Input.GetKeyDown("w") || fingerCount == 1)
+        //{
+        //    if(Physics.Raycast(Camera.transform.position, Camera.transform.TransformDirection(Vector3.forward), out RaycastHit hit, Mathf.Infinity))
+        //    {
+        //        Debug.DrawRay(Camera.transform.position, Camera.transform.TransformDirection(Vector3.forward), Color.white, 30f, true);
+        //
+        //        //if(touch.phase == TouchPhase.Ended)
+        //        //{
+        //        //
+        //        //}
+        //    }
+        //}
+
 		//movement handling end
 		
 		//object interaction start
-		if(Input.GetKey("e") || fingerCount == 1 /*|| ControllerActionKey*/&& nearTape)
+		if(Input.GetKey("e") || fingerCount == 2 /*|| ControllerActionKey*/&& nearTape)
 		{
 			Tape.GetComponent<Rigidbody>().useGravity = false;
 			Tape.transform.position = this.transform.position;
 			Tape.transform.position -= new Vector3(0.0f, 0.0f, 0.15f);//picks tape up
 			
 			Tape.transform.parent = this.transform;//makes it a child of the player so it inherits transforms
+            VHS.enabled = true;
 			
 			hasTape = true;
 			nearTape = false;//trigger setting
@@ -80,6 +117,7 @@ public class PlayerScript : MonoBehaviour
 		if(Input.GetKey("e") || fingerCount == 2 /*|| ControllerActionKey*/ && nearTV && hasTape)
 		{
 			Destroy(Tape,0);
+            VHS.enabled = false;
 			Debug.Log("Movie plays now");
 		}//plays movie
 		

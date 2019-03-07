@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Tape
   - TapePlayer
+  - Floor
+  - VHS
   layers:
   - Default
   - TransparentFX
