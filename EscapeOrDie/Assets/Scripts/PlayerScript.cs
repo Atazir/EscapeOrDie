@@ -10,7 +10,6 @@ public class PlayerScript : MonoBehaviour
 	
 	public float speed;//players speed value
 	
-	
 	public bool nearTape;//check for if player is near the object
 	
 	public bool hasTape;//check for if player has picked up the tape
@@ -22,15 +21,28 @@ public class PlayerScript : MonoBehaviour
 	public bool nearTV;//check for if player is near TV
 
     public Vector3 targetLocation;
-
-    public Touch touch;
+	
+	public GameObject UI;
 
     public RawImage VHS;
 
+	public float Cooldown  = 0.25f;//cooldown for screen fade
+	
+	public float Timer;
+	
+	private int layerMask = -1;
 
-
+	public bool open = false;
+	
+	public bool started = false;
+	
+	public bool engaged = false;
+	public bool engaged1 = false;
+	
     void Start()
     {
+		UI.SetActive(false);
+		
         rb = this.GetComponent<Rigidbody>();//gets the current objects rigidbody component
 		
 		Tape = GameObject.FindGameObjectWithTag("Tape");//finds and assigns the tape object
@@ -40,113 +52,96 @@ public class PlayerScript : MonoBehaviour
 		nearTape = false;//default value is false
 		hasTape = false;//default value is false
 		nearTV = false;//defaul value is false
+		
+		VHS.enabled = false; // initial set for VHS UI Element to be off
     }
 
 	void FixedUpdate()
 	{
-		var fingerCount = 0;
-        foreach (Touch touch in Input.touches)
-        {
-            if (touch.phase != TouchPhase.Ended && touch.phase != TouchPhase.Canceled)
-            {
-                fingerCount++;
-            }
-        }
-    
+		if(Input.GetButtonDown("Jump")){
+			
+			switch (open)
+			{
+				case true:
+					CloseMenu();
+					break;
+				case false:
+					OpenMenu();
+					break;
+			}
+			
+		}//open/close the menu
+	
 		//movement handling start		
-		if(Input.GetKeyDown("w") || fingerCount == 1 /*|| ControllerD-PadUp*/)
+		if(Input.GetButtonDown("Fire3") && engaged == false && engaged1 == false)
 		{
-			Debug.Log("Yo" + Camera.transform.forward * speed);
-            //transform.position += new Vector3(Camera.transform.forward.x,0.0f, Camera.transform.forward.z) * speed;//moves player in the forward direction relative to their perspective and isolatesou movement in the Y axis
-            if (Physics.Raycast(transform.position, Camera.transform.TransformDirection(Vector3.forward),out RaycastHit hit, Mathf.Infinity))
+            if (Physics.Raycast(transform.position, Camera.transform.TransformDirection(Vector3.forward),out RaycastHit hit, Mathf.Infinity, layerMask , QueryTriggerInteraction.Ignore))
             {
                 if(hit.transform.tag == "Floor")
-                {
+                {	Camera.GetComponent<Camera>().cullingMask = 0;//Fades screen to black
+					Timer = Time.deltaTime;//Teleport starts
                     targetLocation = hit.point;
                     targetLocation += new Vector3(0, transform.localScale.y / 2, 0);
-                    transform.position = targetLocation;
-                    Debug.Log("hit");
-                }
-                else
-                {
-                    Debug.Log(hit.transform.name);
+                    transform.position = new Vector3(targetLocation.x, transform.position.y, targetLocation.z);
+					
                 }
             }
 		}
-
-        //if(Input.GetKeyDown("w") || fingerCount == 1)
-        //{
-        //    if(Physics.Raycast(Camera.transform.position, Camera.transform.TransformDirection(Vector3.forward), out RaycastHit hit, Mathf.Infinity))
-        //    {
-        //        Debug.DrawRay(Camera.transform.position, Camera.transform.TransformDirection(Vector3.forward), Color.white, 30f, true);
-        //
-        //        //if(touch.phase == TouchPhase.Ended)
-        //        //{
-        //        //
-        //        //}
-        //    }
-        //}
-
+		Timer += Time.deltaTime;//updates the time
+		if(Cooldown < Timer)
+		{
+			Camera.GetComponent<Camera>().cullingMask = -1;
+		}//checks time 
 		//movement handling end
 		
 		//object interaction start
-		if(Input.GetKey("e") || fingerCount == 2 /*|| ControllerActionKey*/&& nearTape)
-		{
-			Tape.GetComponent<Rigidbody>().useGravity = false;
-			Tape.transform.position = this.transform.position;
-			Tape.transform.position -= new Vector3(0.0f, 0.0f, 0.15f);//picks tape up
-			
-			Tape.transform.parent = this.transform;//makes it a child of the player so it inherits transforms
-            VHS.enabled = true;
-			
-			hasTape = true;
-			nearTape = false;//trigger setting
-			
-		}//picks up the tape when the player presses e near it and lets them walk around with it
 		
-		if(Input.GetKey("r") /*|| ControllerActionKey2*/&& hasTape)
-		{
-			Tape.transform.parent = null;//removes Tape as child of player
-			//Tape.transform.position = new Vector3(Tape.transform.position.x, 0.0f, Tape.transform.position.z);//drops tape to floor
-			Tape.GetComponent<Rigidbody>().useGravity = true;
-			hasTape = false;
-			nearTape = true;//trigger setting
+		if (Input.GetButtonDown("Fire1"))
+        {	
+			Physics.Raycast(transform.position, Camera.transform.TransformDirection(Vector3.forward),out RaycastHit hit1, 2);
 			
-		}//drops the tap when the player presses r
-		
-		if(Input.GetKey("e") || fingerCount == 2 /*|| ControllerActionKey*/ && nearTV && hasTape)
+				switch(hit1.transform.tag)
+				{
+					case "Tape" :
+						Tape.SetActive(false);
+						VHS.enabled = true;
+						hasTape = true;
+						nearTape = false;//trigger setting
+						break;
+					case "TapePlayer":
+						Destroy(Tape,0);
+						VHS.enabled = false;
+						started = true;
+						Debug.Log("Movie plays now");
+						break;
+					case "GravityMazePuzzle":
+						engaged1 = true;
+						break;
+					
+					default:
+						break;
+				}
+			
+		}
+		if(Input.GetButtonDown("Cancel"))
 		{
-			Destroy(Tape,0);
-            VHS.enabled = false;
-			Debug.Log("Movie plays now");
-		}//plays movie
+			engaged1 = false;
+		}
 		
 	}
-	
-	void OnTriggerEnter(Collider other)
+		
+	public void OpenMenu()
 	{
-		if(other.tag == "Tape")
-		{
-			nearTape = true;//updates nearTape variable to true while within area near the tape
-		}
-		else if (other.tag == "TapePlayer")
-		{
-			nearTV = true;//updates nearTV value to true when near tv
-		}
-		
-	}
+		open = true;
+		engaged = true;
+		UI.SetActive(true);
+	}//open menu function
 	
-	void OnTriggerExit(Collider other)
+	public void CloseMenu()
 	{
-		if(other.tag == "Tape")
-		{
-			nearTape = false;//updates nearTape value to false when player leaves area
-		}
-		else if (other.tag == "TapePlayer")
-		{
-			nearTV = false;//updates nearTV value to false when player leaves area
-		}
-		
-	}
+		UI.SetActive(false);
+		engaged = false;
+		open = false;
+	}//close menu function
 	
 }
