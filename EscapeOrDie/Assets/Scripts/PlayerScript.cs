@@ -25,6 +25,7 @@ public class PlayerScript : MonoBehaviour
 	public GameObject UI;
 
     public RawImage VHS;
+    public RawImage KEY;
 
 	public float Cooldown  = 0.25f;//cooldown for screen fade
 	
@@ -38,6 +39,8 @@ public class PlayerScript : MonoBehaviour
 	
 	public bool engaged = false;
 	public bool engaged1 = false;
+
+    public bool canMove = true;
 	
     void Start()
     {
@@ -54,6 +57,7 @@ public class PlayerScript : MonoBehaviour
 		nearTV = false;//defaul value is false
 		
 		VHS.enabled = false; // initial set for VHS UI Element to be off
+        KEY.enabled = false;
     }
 
 	void FixedUpdate()
@@ -73,7 +77,7 @@ public class PlayerScript : MonoBehaviour
 		}//open/close the menu
 	
 		//movement handling start		
-		if(Input.GetButtonDown("Fire3") && engaged == false && engaged1 == false)
+		if(Input.GetButtonDown("Fire3") && engaged == false && engaged1 == false && canMove)
 		{
             if (Physics.Raycast(transform.position, Camera.transform.TransformDirection(Vector3.forward),out RaycastHit hit, Mathf.Infinity, layerMask , QueryTriggerInteraction.Ignore))
             {
@@ -108,15 +112,24 @@ public class PlayerScript : MonoBehaviour
 						hasTape = true;
 						nearTape = false;//trigger setting
 						break;
+
 					case "TapePlayer":
 						Destroy(Tape,0);
 						VHS.enabled = false;
 						started = true;
 						Debug.Log("Movie plays now");
 						break;
+
 					case "GravityMazePuzzle":
 						engaged1 = true;
 						break;
+
+                    case "ExitDoor":
+                        if(started == true && KEY.enabled == true)
+                        {
+                            UI.GetComponent<UIScript>().timerText.text = "YOU WIN";
+                        }
+                        break;
 					
 					default:
 						break;
