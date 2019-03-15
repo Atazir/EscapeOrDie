@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class UIScript : MonoBehaviour
 {
@@ -47,6 +48,7 @@ public class UIScript : MonoBehaviour
     {
         player.GetComponent<PlayerScript>().canMove = false;
         timerText.text = "GAME OVER";
+        SceneManager.LoadScene("Game Over");
     }
 	
 	

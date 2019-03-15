@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class PlayerScript : MonoBehaviour
 {
@@ -106,33 +107,35 @@ public class PlayerScript : MonoBehaviour
 			
 				switch(hit1.transform.tag)
 				{
-					case "Tape" :
-						Tape.SetActive(false);
-						VHS.enabled = true;
-						hasTape = true;
-						nearTape = false;//trigger setting
-						break;
+				case "Tape" :
+					Tape.SetActive(false);
+					VHS.enabled = true;
+					hasTape = true;
+					nearTape = false;//trigger setting
+					break;
 
-					case "TapePlayer":
-						Destroy(Tape,0);
-						VHS.enabled = false;
-						started = true;
-						Debug.Log("Movie plays now");
-						break;
+				case "TapePlayer":
+					Destroy(Tape,0);
+					VHS.enabled = false;
+					started = true;
+					Debug.Log("Movie plays now");
+					break;
 
-					case "GravityMazePuzzle":
-						engaged1 = true;
-						break;
+				case "GravityMazePuzzle":
+					engaged1 = true;
+					break;
 
-                    case "ExitDoor":
-                        if(started == true && KEY.enabled == true)
-                        {
-                            UI.GetComponent<UIScript>().timerText.text = "YOU WIN";
-                        }
-                        break;
-					
-					default:
-						break;
+                case "ExitDoor":
+                    if(started == true && KEY.enabled == true)
+                    {
+                        UI.GetComponent<UIScript>().timerText.text = "YOU WIN";
+                        SceneManager.LoadScene("Win Screen");                
+                    }
+
+                    break;
+				
+				default:
+					break;
 				}
 			
 		}
