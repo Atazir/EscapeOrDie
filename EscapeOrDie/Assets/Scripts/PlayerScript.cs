@@ -124,10 +124,13 @@ public class PlayerScript : MonoBehaviour
 
 				case "GravityMazePuzzle":
 					engaged1 = true;
+					canMove = false;
 					break;
 
 				case "Padlock":
 					engaged2 = true;
+					canMove = false;
+					break;
 				
                 case "ExitDoor":
                     if(started == true && KEY.enabled == true)
@@ -145,6 +148,9 @@ public class PlayerScript : MonoBehaviour
 		}
 		if(Input.GetButtonDown("Cancel"))
 		{
+			if(engaged == false){
+				canMove = true;
+			}
 			engaged1 = false;
 			engaged2 = false;
 		}
@@ -155,6 +161,7 @@ public class PlayerScript : MonoBehaviour
 	{
 		open = true;
 		engaged = true;
+		canMove = false;
 		UI.SetActive(true);
 	}//open menu function
 	
@@ -162,6 +169,7 @@ public class PlayerScript : MonoBehaviour
 	{
 		UI.SetActive(false);
 		engaged = false;
+		canMove = true;
 		open = false;
 	}//close menu function
 	
