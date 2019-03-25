@@ -40,6 +40,7 @@ public class PlayerScript : MonoBehaviour
 	
 	public bool engaged = false;
 	public bool engaged1 = false;
+	public bool engaged2 = false;
 
     public bool canMove = true;
 	
@@ -78,7 +79,7 @@ public class PlayerScript : MonoBehaviour
 		}//open/close the menu
 	
 		//movement handling start		
-		if(Input.GetButtonDown("Fire3") && engaged == false && engaged1 == false && canMove)
+		if(Input.GetButtonDown("Fire3") && canMove)
 		{
             if (Physics.Raycast(transform.position, Camera.transform.TransformDirection(Vector3.forward),out RaycastHit hit, Mathf.Infinity, layerMask , QueryTriggerInteraction.Ignore))
             {
@@ -125,6 +126,9 @@ public class PlayerScript : MonoBehaviour
 					engaged1 = true;
 					break;
 
+				case "Padlock":
+					engaged2 = true;
+				
                 case "ExitDoor":
                     if(started == true && KEY.enabled == true)
                     {
@@ -142,6 +146,7 @@ public class PlayerScript : MonoBehaviour
 		if(Input.GetButtonDown("Cancel"))
 		{
 			engaged1 = false;
+			engaged2 = false;
 		}
 		
 	}
