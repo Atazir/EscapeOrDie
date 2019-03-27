@@ -18,6 +18,10 @@ public class UIScript : MonoBehaviour
 
     public Text timerText;
     public float timer = 600.0f; //10 minutes on the clock on run time
+
+    public RawImage code1;
+    public RawImage code2;
+    public RawImage code3;
 	
     void Start()
     {
@@ -25,6 +29,10 @@ public class UIScript : MonoBehaviour
         m_camera = GameObject.FindGameObjectWithTag("MainCamera");//finds camera object
 
         timerText.text = timer.ToString();
+
+        code1.enabled = false;
+        code2.enabled = false;
+        code3.enabled = false;
     }
  
     void Update()
