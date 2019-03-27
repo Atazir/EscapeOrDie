@@ -21,6 +21,8 @@ public class PlayerScript : MonoBehaviour
 	
 	public bool nearTV;//check for if player is near TV
 
+    public GameObject StartAudio;
+
     public Vector3 targetLocation;
 	
 	public GameObject UI;
@@ -116,11 +118,16 @@ public class PlayerScript : MonoBehaviour
 					break;
 
 				case "TapePlayer":
-					Destroy(Tape,0);
-					VHS.enabled = false;
-					started = true;
-					Debug.Log("Movie plays now");
-					break;
+                    if(VHS.enabled == true)
+                    {
+                        Destroy(Tape, 0);
+                        VHS.enabled = false;
+                        started = true;
+                        Debug.Log("Movie plays now");
+                        //Insert VHS Audio here
+                        StartAudio.GetComponent<AudioSource>().Play();
+                    }
+                    break;
 
 				case "GravityMazePuzzle":
 					engaged1 = true;
