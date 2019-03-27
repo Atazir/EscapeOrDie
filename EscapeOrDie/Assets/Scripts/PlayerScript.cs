@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 
 public class PlayerScript : MonoBehaviour
 {
+	public ComboLockScript lockScript;
 	
 	public Rigidbody rb;//Rigidbody component
 	
@@ -18,6 +19,8 @@ public class PlayerScript : MonoBehaviour
 	public GameObject Tape;//Tape Object
 	
 	public GameObject Camera;//camera object
+	
+	public GameObject Reticle;
 	
 	public bool nearTV;//check for if player is near TV
 
@@ -46,6 +49,10 @@ public class PlayerScript : MonoBehaviour
 	
     void Start()
     {
+		lockScript = GameObject.Find("/Padlock/Cube").GetComponent<ComboLockScript>();
+		
+		Reticle = GameObject.Find("GvrReticlePointer");
+		
 		UI.SetActive(false);
 		
         rb = this.GetComponent<Rigidbody>();//gets the current objects rigidbody component
@@ -130,6 +137,7 @@ public class PlayerScript : MonoBehaviour
 				case "Padlock":
 					engaged2 = true;
 					canMove = false;
+					Reticle.SetActive(false);
 					break;
 				
                 case "ExitDoor":
@@ -151,8 +159,14 @@ public class PlayerScript : MonoBehaviour
 			if(engaged == false){
 				canMove = true;
 			}
+			if(engaged2 == true){
+				engaged2 = false;	
+				Reticle.SetActive(true);
+				lockScript.resetLock = true;
+			}
 			engaged1 = false;
-			engaged2 = false;
+			
+			
 		}
 		
 	}
