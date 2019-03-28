@@ -32,9 +32,9 @@ public class Playsound : MonoBehaviour
         myAudioList.Add((AudioClip)Resources.Load("Audio/DTMF/Confirm")); //Confirm + 10
         myAudioList.Add((AudioClip)Resources.Load("Audio/DTMF/Cancel")); //Cancel + 11
 
-        answerSheet[0] = 6;
-        answerSheet[1] = 3;
-        answerSheet[2] = 9;
+        answerSheet.Add(6);
+        answerSheet.Add(3);
+        answerSheet.Add(9);
     }
 
     public void Update()

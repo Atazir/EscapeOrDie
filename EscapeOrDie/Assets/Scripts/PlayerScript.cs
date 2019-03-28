@@ -31,8 +31,17 @@ public class PlayerScript : MonoBehaviour
 	public GameObject UI;
 
     public RawImage VHS;
-    public RawImage KEY;
+    public RawImage KEY1;
+    public RawImage KEY2;
+	public RawImage Code1;
+	public RawImage Code2;
+	public RawImage Code3;
 
+	public bool HasKey1 = false;
+	public bool HasKey2 = false;
+	
+	public bool hasCode = false;
+	
 	public float Cooldown  = 0.25f;//cooldown for screen fade
 	
 	public float Timer;
@@ -46,8 +55,11 @@ public class PlayerScript : MonoBehaviour
 	public bool engaged = false;
 	public bool engaged1 = false;
 	public bool engaged2 = false;
+	public bool engaged3 = false;
 
     public bool canMove = true;
+	
+	public GameObject currentObj;
 	
     void Start()
     {
@@ -68,7 +80,8 @@ public class PlayerScript : MonoBehaviour
 		nearTV = false;//defaul value is false
 		
 		VHS.enabled = false; // initial set for VHS UI Element to be off
-        KEY.enabled = false;
+        KEY1.enabled = false;
+        KEY2.enabled = false;
     }
 
 	void FixedUpdate()
@@ -140,15 +153,34 @@ public class PlayerScript : MonoBehaviour
 					engaged1 = true;
 					canMove = false;
 					break;
-
+				case "CanMove":
+					engaged3 = true;
+					canMove = false;
+					currentObj = GameObject.Find(hit1.transform.name);
+					Reticle.SetActive(false);
+					break;
 				case "Padlock":
 					engaged2 = true;
 					canMove = false;
 					Reticle.SetActive(false);
 					break;
-				
+				case "Room1Door":
+				if(started == true){
+					Camera.GetComponent<Camera>().cullingMask = 0;//Fades screen to black
+					Timer = Time.deltaTime;//Teleport starts
+                    transform.position = new Vector3(-8.0f,1.1f,0.0f);
+				}
+					break;
+				case "Safe":
+					if(HasKey1 == true && HasKey2 == true){
+						hasCode = true;
+						Code1.enabled = true;
+						Code2.enabled = true;
+						Code3.enabled = true;
+					}
+					break;
                 case "ExitDoor":
-                    if(started == true && KEY.enabled == true)
+                    if(started == true && hasCode == true)
                     {
                         UI.GetComponent<UIScript>().timerText.text = "YOU WIN";
                         SceneManager.LoadScene("Win Screen");                
@@ -166,14 +198,38 @@ public class PlayerScript : MonoBehaviour
 			if(engaged == false){
 				canMove = true;
 			}
+			if(engaged3 == true){
+				engaged3 = false;
+				currentObj.GetComponent<Rigidbody>().useGravity = true;
+				Reticle.SetActive(true);
+			}
 			if(engaged2 == true){
 				engaged2 = false;	
 				Reticle.SetActive(true);
 				lockScript.resetLock = true;
 			}
+			
 			engaged1 = false;
 			
 			
+		}
+		
+		if(engaged3 == true){
+			currentObj.GetComponent<Rigidbody>().useGravity = false;
+			if(Input.GetAxis("DpadLR") < 0)
+			{
+				currentObj.transform.Translate(Vector3.left * Time.deltaTime/5);
+			}     
+			if(Input.GetAxis("DpadLR") > 0)
+			{
+				currentObj.transform.Translate(-Vector3.left * Time.deltaTime/5);
+			}
+			if(Input.GetAxis("DpadUD") < 0){
+				currentObj.transform.Translate(Vector3.up * Time.deltaTime/5);
+			}
+			if(Input.GetAxis("DpadUD") > 0){
+				currentObj.transform.Translate(-Vector3.up * Time.deltaTime/5);
+			}
 		}
 		
 	}

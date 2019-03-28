@@ -23,7 +23,8 @@ public class ReachedEndScript : MonoBehaviour
 
 		if(other.tag == "MazeEnd")
 		{
-            m_Player.GetComponent<PlayerScript>().KEY.enabled = true;
+            m_Player.GetComponent<PlayerScript>().KEY1.enabled = true;
+			m_Player.GetComponent<PlayerScript>().HasKey1 = true;
 			Destroy(this.gameObject, 0);
 		}		
 	}

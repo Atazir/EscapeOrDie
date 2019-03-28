@@ -228,6 +228,8 @@ public class ComboLockScript : MonoBehaviour
 			if(tumblerNum1 == nums[0] && tumblerNum2 == nums[1] && tumblerNum3 == nums[2]){
 				Debug.Log("Opens");
 				open = true;
+				player.GetComponent<PlayerScript>().HasKey2 = true;
+				player.GetComponent<PlayerScript>().KEY2.enabled = true;
 			}
 		}
 		if(Input.GetAxis("DpadUD") == 0){
