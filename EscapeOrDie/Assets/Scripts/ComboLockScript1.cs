@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ComboLockScript : MonoBehaviour
+public class ComboLockScript1 : MonoBehaviour
 {
 	
 	public GameObject tumbler1;
@@ -17,27 +17,28 @@ public class ComboLockScript : MonoBehaviour
 	public int tumblerNum3;
 	
 	public bool open = false;
+	
 	public bool moved = false;
-	
-	public List<int> nums = new List<int>();
-	
-	public NumberRandomization randScript;
 	
 	public bool axisVReset = true;
 	public bool axisHReset = true;
+	
+	public GameObject Tape;
+	public GameObject BoxDoor;
 	
 	public bool resetLock = false;
 	
 	public float speed = 1;
 	
-	public int j;
-	
 	public Vector3 offset;
+	
     void Start(){
-		randScript = GameObject.Find("NumberSpots").GetComponent<NumberRandomization>();
 		tumblerNum1 = 1;
 		tumblerNum2 = 1;
 		tumblerNum3 = 1;
+		
+		Tape = GameObject.FindGameObjectWithTag("Tape");//finds and assigns the tape object
+		BoxDoor = GameObject.FindGameObjectWithTag("BoxDoor");//finds and assigns the tape object
 		
 		activeTumbler = tumbler1;
 		player = GameObject.FindGameObjectWithTag("Player");
@@ -45,72 +46,15 @@ public class ComboLockScript : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update(){	
-		if(j<3){
-			for(int i = 0; i < randScript.spots.Length; i++){
-				
-				if(randScript.spots[i] != null){
-				
-					
-					switch(randScript.spots[i].GetComponent<Renderer>().material.ToString()){
-						
-						case "Number0 (Instance) (UnityEngine.Material)":
-							nums.Add(0);
-							j++;
-							break;
-						case "Number1 (Instance) (UnityEngine.Material)":
-							nums.Add(1);
-							j++;
-							break;
-						case "Number2 (Instance) (UnityEngine.Material)":
-							nums.Add(2);
-							j++;
-							break;
-						case "Number3 (Instance) (UnityEngine.Material)":
-							nums.Add(3);
-							j++;
-							break;
-						case "Number4 (Instance) (UnityEngine.Material)":
-							nums.Add(4);
-							j++;
-							break;
-						case "Number5 (Instance) (UnityEngine.Material)":
-							nums.Add(5);
-							j++;
-							break;
-						case "Number6 (Instance) (UnityEngine.Material)":
-							nums.Add(6);
-							j++;
-							break;
-						case "Number7 (Instance) (UnityEngine.Material)":
-							nums.Add(7);
-							j++;
-							break;
-						case "Number8 (Instance) (UnityEngine.Material)":
-							nums.Add(8);
-							j++;
-							break;
-						case "Number9 (Instance) (UnityEngine.Material)":
-							nums.Add(9);
-							j++;
-							break;
-						default:
-						Debug.Log("Default");
-						break;
-					}
-					
-				}
-			}
-		}
-		
-		if(player.GetComponent<PlayerScript>().engaged2 == true){
+    void Update(){			
+		if(player.GetComponent<PlayerScript>().engaged4 == true){
 			if(moved == false){
 				transform.localScale = new Vector3(transform.localScale.x * 16, transform.localScale.y * 16, transform.localScale.z * 16);
 				moved = true;
 			}
 			transform.rotation = Quaternion.Lerp(transform.rotation, m_camera.transform.rotation, Time.time * speed);
 			transform.position = Vector3.Lerp(transform.position, m_camera.transform.position + offset, Time.time * speed);
-			offset = transform.forward * 0.75f;
+			offset = transform.forward * 0.5f;
 			transform.Rotate(0.0f,90.0f,90.0f);
 			
 			Interaction();
@@ -134,15 +78,16 @@ public class ComboLockScript : MonoBehaviour
 				case "Tumbler1":
 					axisHReset = false;
 					activeTumbler = tumbler3;
-
 					break;
 				case "Tumbler2":
 					axisHReset = false;
+					
 					activeTumbler = tumbler1;
 
 					break;
 				case "Tumbler3":
 					axisHReset = false;
+					
 					activeTumbler = tumbler2;
 
 					break;	
@@ -152,16 +97,19 @@ public class ComboLockScript : MonoBehaviour
 			switch (activeTumbler.name){
 				case "Tumbler1":
 					axisHReset = false;
+					
 					activeTumbler = tumbler2;
 
 					break;
 				case "Tumbler2":
 					axisHReset = false;
+					
 					activeTumbler = tumbler3;
 
 					break;
 				case "Tumbler3":
 					axisHReset = false;
+					
 					activeTumbler = tumbler1;
 
 					break;	
@@ -219,11 +167,11 @@ public class ComboLockScript : MonoBehaviour
 			Debug.Log(tumblerNum1);
 			Debug.Log(tumblerNum2);
 			Debug.Log(tumblerNum3);
-				if(tumblerNum1 == nums[0] && tumblerNum2 == nums[1] && tumblerNum3 == nums[2]){
+			if(tumblerNum1 == 1 && tumblerNum2 == 2 && tumblerNum3 == 3){
 					Debug.Log("Opens");
 					open = true;
-					player.GetComponent<PlayerScript>().HasKey2 = true;
-					player.GetComponent<PlayerScript>().KEY2.enabled = true;
+					Tape.GetComponent<BoxCollider>().enabled = true;
+					BoxDoor.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
 				}
 		}
 		if(Input.GetAxis("DpadUD") == 0){

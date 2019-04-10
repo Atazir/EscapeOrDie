@@ -6,7 +6,10 @@ using UnityEngine.SceneManagement;
 
 public class PlayerScript : MonoBehaviour
 {
-	public ComboLockScript lockScript;
+	public LayerMask uI;
+	
+	public ComboLockScript lockScript1;
+	public ComboLockScript1 lockScript2;
 	
 	public Rigidbody rb;//Rigidbody component
 	
@@ -56,6 +59,7 @@ public class PlayerScript : MonoBehaviour
 	public bool engaged1 = false;
 	public bool engaged2 = false;
 	public bool engaged3 = false;
+	public bool engaged4 = false;
 
     public bool canMove = true;
 	
@@ -63,7 +67,8 @@ public class PlayerScript : MonoBehaviour
 	
     void Start()
     {
-		lockScript = GameObject.Find("/Padlock/Cube").GetComponent<ComboLockScript>();
+		lockScript1 = GameObject.Find("/Room2/locker_01b/Padlock/Cube").GetComponent<ComboLockScript>();
+		lockScript2 = GameObject.Find("/Room1/BoxParent/Padlock/Cube").GetComponent<ComboLockScript1>();
 		
 		Reticle = GameObject.Find("GvrReticlePointer");
 		
@@ -72,6 +77,7 @@ public class PlayerScript : MonoBehaviour
         rb = this.GetComponent<Rigidbody>();//gets the current objects rigidbody component
 		
 		Tape = GameObject.FindGameObjectWithTag("Tape");//finds and assigns the tape object
+		Tape.GetComponent<BoxCollider>().enabled = false;
 		
 		Camera = GameObject.FindGameObjectWithTag("MainCamera");//finds and assigns camera object
 		
@@ -98,12 +104,44 @@ public class PlayerScript : MonoBehaviour
 					break;
 			}
 			
+			
 		}//open/close the menu
-	
+			if(Physics.Raycast(transform.position, Camera.transform.TransformDirection(Vector3.forward),out RaycastHit hit2, 2)){
+				switch(hit2.transform.tag)
+					{
+						case "Floor":
+							Reticle.GetComponent<Renderer>().material.SetColor("_Color", Color.blue);
+							break;
+						case "CanMove":
+						case "Padlock":
+						case "PadlockStart":
+						case "TapePlayer":
+						case "GravityMazePuzzle":
+						case "Room1Door":
+						case "ExitDoor":
+						case "Safe":
+							Reticle.GetComponent<Renderer>().material.SetColor("_Color", Color.green);
+							break;
+						case "Button":
+							if(hasCode){
+								Reticle.GetComponent<Renderer>().material.SetColor("_Color", Color.green);
+							}
+							else{
+								Reticle.GetComponent<Renderer>().material.SetColor("_Color", Color.red);
+							}
+							break;
+						default:
+							Reticle.GetComponent<Renderer>().material.SetColor("_Color", Color.white);
+							break;
+						
+					}
+					
+			}
+			else{Reticle.GetComponent<Renderer>().material.SetColor("_Color", Color.white);}
 		//movement handling start		
 		if(Input.GetButtonDown("Fire3") && canMove)
 		{
-            if (Physics.Raycast(transform.position, Camera.transform.TransformDirection(Vector3.forward),out RaycastHit hit, Mathf.Infinity, layerMask , QueryTriggerInteraction.Ignore))
+            if (Physics.Raycast(transform.position, Camera.transform.TransformDirection(Vector3.forward),out RaycastHit hit, 2, layerMask , QueryTriggerInteraction.Ignore))
             {
                 if(hit.transform.tag == "Floor")
                 {	Camera.GetComponent<Camera>().cullingMask = 0;//Fades screen to black
@@ -128,6 +166,9 @@ public class PlayerScript : MonoBehaviour
         {	
 			Physics.Raycast(transform.position, Camera.transform.TransformDirection(Vector3.forward),out RaycastHit hit1, 2);
 			
+			
+			
+			
 				switch(hit1.transform.tag)
 				{
 				case "Tape" :
@@ -148,10 +189,10 @@ public class PlayerScript : MonoBehaviour
                         StartAudio.GetComponent<AudioSource>().Play();
                     }
                     break;
-
 				case "GravityMazePuzzle":
 					engaged1 = true;
 					canMove = false;
+					Reticle.SetActive(false);
 					break;
 				case "CanMove":
 					engaged3 = true;
@@ -164,12 +205,17 @@ public class PlayerScript : MonoBehaviour
 					canMove = false;
 					Reticle.SetActive(false);
 					break;
+				case "PadlockStart":
+					engaged4 = true;
+					canMove = false;
+					Reticle.SetActive(false);
+					break;
 				case "Room1Door":
-				if(started == true){
-					Camera.GetComponent<Camera>().cullingMask = 0;//Fades screen to black
-					Timer = Time.deltaTime;//Teleport starts
-                    transform.position = new Vector3(-8.0f,1.1f,0.0f);
-				}
+					if(started == true){
+						Camera.GetComponent<Camera>().cullingMask = 0;//Fades screen to black
+						Timer = Time.deltaTime;//Teleport starts
+						transform.position = new Vector3(-8.0f,1.1f,0.0f);
+					}
 					break;
 				case "Safe":
 					if(HasKey1 == true && HasKey2 == true){
@@ -179,12 +225,8 @@ public class PlayerScript : MonoBehaviour
 						Code3.enabled = true;
 					}
 					break;
-                case "ExitDoor":
-                    if(started == true && hasCode == true)
-                    {
-                        UI.GetComponent<UIScript>().timerText.text = "YOU WIN";
-                        SceneManager.LoadScene("Win Screen");                
-                    }
+                case "Button":
+                
 
                     break;
 				
@@ -201,35 +243,53 @@ public class PlayerScript : MonoBehaviour
 			if(engaged3 == true){
 				engaged3 = false;
 				currentObj.GetComponent<Rigidbody>().useGravity = true;
-				Reticle.SetActive(true);
+				currentObj.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
 			}
 			if(engaged2 == true){
 				engaged2 = false;	
-				Reticle.SetActive(true);
-				lockScript.resetLock = true;
+				lockScript1.resetLock = true;
+			}
+			if(engaged4 == true){
+				engaged4 = false;	
+				lockScript2.resetLock = true;
 			}
 			
 			engaged1 = false;
+			Reticle.SetActive(true);
 			
 			
 		}
 		
 		if(engaged3 == true){
 			currentObj.GetComponent<Rigidbody>().useGravity = false;
+			currentObj.GetComponent<Rigidbody>().velocity = new Vector3(0.0f,0.0f,0.0f);
 			if(Input.GetAxis("DpadLR") < 0)
 			{
-				currentObj.transform.Translate(Vector3.left * Time.deltaTime/5);
+				currentObj.transform.Translate(Vector3.left * Time.deltaTime/2.5f);
 			}     
 			if(Input.GetAxis("DpadLR") > 0)
 			{
-				currentObj.transform.Translate(-Vector3.left * Time.deltaTime/5);
+				currentObj.transform.Translate(-Vector3.left * Time.deltaTime/2.5f);
 			}
 			if(Input.GetAxis("DpadUD") < 0){
-				currentObj.transform.Translate(Vector3.up * Time.deltaTime/5);
+				currentObj.transform.Translate(Vector3.up * Time.deltaTime/2.5f);
 			}
 			if(Input.GetAxis("DpadUD") > 0){
-				currentObj.transform.Translate(-Vector3.up * Time.deltaTime/5);
+				currentObj.transform.Translate(-Vector3.up * Time.deltaTime/2.5f);
 			}
+			if(Input.GetAxis("RSUD") < 0){
+				currentObj.transform.Translate(Vector3.forward * Time.deltaTime/2.5f);
+			}
+			if(Input.GetAxis("RSUD") > 0){
+				currentObj.transform.Translate(-Vector3.forward * Time.deltaTime/2.5f);
+			}
+			if(Input.GetAxis("DpadLR") == 0 && Input.GetAxis("DpadUD") == 0 && Input.GetAxis("RSUD") == 0){
+			currentObj.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeRotationZ | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY;
+			}
+			else{
+			currentObj.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
+			}
+			
 		}
 		
 	}
@@ -249,5 +309,7 @@ public class PlayerScript : MonoBehaviour
 		canMove = true;
 		open = false;
 	}//close menu function
-	
+	public void ButtonThings(){
+		
+	}
 }

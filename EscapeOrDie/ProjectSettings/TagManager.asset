@@ -16,6 +16,10 @@ TagManager:
   - Safe
   - CanMove
   - Padlock
+  - ExitDoor
+  - PadlockStart
+  - BoxDoor
+  - Button
   layers:
   - Default
   - TransparentFX

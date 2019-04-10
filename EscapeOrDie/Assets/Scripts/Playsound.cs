@@ -19,7 +19,7 @@ public class Playsound : MonoBehaviour
     public void Start()
     {
         //Add all the button sounds to the list
-        myAudioList.Add((AudioClip)Resources.Load("Audio/DTMF/0")); //0
+        myAudioList.Add(Resources.Load<AudioClip>("Assets/0")); //0
         myAudioList.Add((AudioClip)Resources.Load("Audio/DTMF/1")); //1
         myAudioList.Add((AudioClip)Resources.Load("Audio/DTMF/2")); //2
         myAudioList.Add((AudioClip)Resources.Load("Audio/DTMF/3")); //3
@@ -45,9 +45,9 @@ public class Playsound : MonoBehaviour
         }
     }
 
-    public void Clicky ()
-    {
-        switch(this.name)
+    public void Clicky (string Name)
+    {Debug.Log("Ding");
+        switch(Name)
         {
             case "Button0":
                 transform.GetComponent<AudioSource>().clip = myAudioList[0];

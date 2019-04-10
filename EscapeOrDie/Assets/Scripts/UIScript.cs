@@ -39,12 +39,12 @@ public class UIScript : MonoBehaviour
     {
 		transform.rotation = Quaternion.Lerp(transform.rotation, m_camera.transform.rotation, Time.time * speed);
 		transform.position = Vector3.Lerp(transform.position, m_camera.transform.position + offset, Time.time * speed);
-		offset = transform.forward * 0.5f;
+		offset = transform.forward * 1.5f;
         //lerps the canvas toward where the player is looking and pushes forward 0.5
-
-        timerText.text = timer.ToString();
-        timer -= Time.deltaTime;
-
+		if(player.GetComponent<PlayerScript>().started == true){
+			timerText.text = timer.ToString();
+			timer -= Time.deltaTime;
+		}
         if (timer < 0)
         {
             timerText.text = "00:00";
@@ -56,7 +56,7 @@ public class UIScript : MonoBehaviour
     {
         player.GetComponent<PlayerScript>().canMove = false;
         timerText.text = "GAME OVER";
-        SceneManager.LoadScene("Game Over");
+        SceneManager.LoadScene(2);
     }
 	
 	

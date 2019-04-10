@@ -16,7 +16,7 @@ public class LoadSceneScript : MonoBehaviour
     {
         if(Input.GetButtonDown("Fire1"))
         {
-            SceneManager.LoadScene("MainScene");
+            SceneManager.LoadScene(1);
         }
     }
 
