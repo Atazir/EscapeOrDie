@@ -48,7 +48,7 @@ Rigidbody:
   m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 116
+  m_Constraints: 126
   m_CollisionDetection: 0
 --- !u!65 &1905036396
 BoxCollider:
@@ -75,7 +75,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b03d0fe57f354c4ba2404c1733e37c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lockScript: {fileID: 0}
+  uI:
+    serializedVersion: 2
+    m_Bits: 0
+  lockScript1: {fileID: 0}
+  lockScript2: {fileID: 0}
   rb: {fileID: 0}
   speed: 0
   nearTape: 0
@@ -93,6 +97,13 @@ MonoBehaviour:
   Code1: {fileID: 0}
   Code2: {fileID: 0}
   Code3: {fileID: 0}
+  Target1: {fileID: 0}
+  Target2: {fileID: 0}
+  Target3: {fileID: 0}
+  targetNum1: 0
+  targetNum2: 0
+  targetNum3: 0
+  curNum: 0
   HasKey1: 0
   HasKey2: 0
   hasCode: 0
@@ -104,8 +115,20 @@ MonoBehaviour:
   engaged1: 0
   engaged2: 0
   engaged3: 0
+  engaged4: 0
   canMove: 1
   currentObj: {fileID: 0}
+  mats:
+  - {fileID: 2100000, guid: ee3de76f922016c42b28da7bbc5e0d8a, type: 2}
+  - {fileID: 2100000, guid: 45e14c0c1d4c2ce4d821e06de6007e45, type: 2}
+  - {fileID: 2100000, guid: 171b3e93be1962a49ba683725e8dbcc8, type: 2}
+  - {fileID: 2100000, guid: b8c38aa6b192df240ad831f20aa3d74d, type: 2}
+  - {fileID: 2100000, guid: 0132eb62e07d56e408d5198a141d1c06, type: 2}
+  - {fileID: 2100000, guid: 9ff848a6f56d10b42af2399f2e57a6aa, type: 2}
+  - {fileID: 2100000, guid: 30b4bcec944bdce42a71a12fab28fd1a, type: 2}
+  - {fileID: 2100000, guid: e31a6aca775c2ac469d09707e2b5ec1d, type: 2}
+  - {fileID: 2100000, guid: 0f5457e1874445744a7815f620b6f7e3, type: 2}
+  - {fileID: 2100000, guid: 38590e3add4437d4cbbd60fb6b7d9bfa, type: 2}
 --- !u!1 &5688873701555442023
 GameObject:
   m_ObjectHideFlags: 0
@@ -343,6 +366,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 114000013899574178, guid: 34c21f523e72f45509a4e37ed0293c3b,
+        type: 3}
+      propertyPath: armModel
+      value: 
+      objectReference: {fileID: 6434213253220297941}
     - target: {fileID: 114000010349995660, guid: 34c21f523e72f45509a4e37ed0293c3b,
         type: 3}
       propertyPath: reticle
@@ -353,11 +381,6 @@ PrefabInstance:
       propertyPath: controller
       value: 
       objectReference: {fileID: 6404093060776044650}
-    - target: {fileID: 114000013899574178, guid: 34c21f523e72f45509a4e37ed0293c3b,
-        type: 3}
-      propertyPath: armModel
-      value: 
-      objectReference: {fileID: 6434213253220297941}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 34c21f523e72f45509a4e37ed0293c3b, type: 3}
 --- !u!4 &6404093059854382797 stripped

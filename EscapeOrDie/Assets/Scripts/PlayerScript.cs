@@ -33,6 +33,8 @@ public class PlayerScript : MonoBehaviour
 	
 	public GameObject UI;
 
+	public bool run = true;
+	
     public RawImage VHS;
     public RawImage KEY1;
     public RawImage KEY2;
@@ -40,6 +42,15 @@ public class PlayerScript : MonoBehaviour
 	public RawImage Code2;
 	public RawImage Code3;
 
+	public GameObject Target1;
+	public GameObject Target2;
+	public GameObject Target3;
+	
+	public float targetNum1;
+	public float targetNum2;
+	public float targetNum3;
+	public int curNum;
+	
 	public bool HasKey1 = false;
 	public bool HasKey2 = false;
 	
@@ -65,8 +76,13 @@ public class PlayerScript : MonoBehaviour
 	
 	public GameObject currentObj;
 	
+	public List<Material> mats = new List<Material>();
+	
     void Start()
     {
+		targetNum1 = -1;
+		targetNum2 = -1;
+		targetNum3 = -1;
 		lockScript1 = GameObject.Find("/Room2/locker_01b/Padlock/Cube").GetComponent<ComboLockScript>();
 		lockScript2 = GameObject.Find("/Room1/BoxParent/Padlock/Cube").GetComponent<ComboLockScript1>();
 		
@@ -143,8 +159,9 @@ public class PlayerScript : MonoBehaviour
 		{
             if (Physics.Raycast(transform.position, Camera.transform.TransformDirection(Vector3.forward),out RaycastHit hit, 2, layerMask , QueryTriggerInteraction.Ignore))
             {
-                if(hit.transform.tag == "Floor")
-                {	Camera.GetComponent<Camera>().cullingMask = 0;//Fades screen to black
+                if(hit.transform.tag == "Floor"){
+					transform.GetComponent<AudioSource>().Play();
+					Camera.GetComponent<Camera>().cullingMask = 0;//Fades screen to black
 					Timer = Time.deltaTime;//Teleport starts
                     targetLocation = hit.point;
                     targetLocation += new Vector3(0, transform.localScale.y / 2, 0);
@@ -154,6 +171,9 @@ public class PlayerScript : MonoBehaviour
             }
 		}
 		Timer += Time.deltaTime;//updates the time
+		if(Cooldown * 8 < Timer){
+			transform.GetComponent<AudioSource>().Pause();
+		}
 		if(Cooldown < Timer)
 		{
 			Camera.GetComponent<Camera>().cullingMask = -1;
@@ -223,11 +243,12 @@ public class PlayerScript : MonoBehaviour
 						Code1.enabled = true;
 						Code2.enabled = true;
 						Code3.enabled = true;
+						hit1.transform.GetComponent<AudioSource>().Play();
 					}
 					break;
                 case "Button":
-                
-
+					ButtonThings(hit1.transform.name);
+					if(hasCode)hit1.transform.GetComponent<AudioSource>().Play();
                     break;
 				
 				default:
@@ -309,7 +330,70 @@ public class PlayerScript : MonoBehaviour
 		canMove = true;
 		open = false;
 	}//close menu function
-	public void ButtonThings(){
-		
+	
+	public void ButtonThings(string Name){
+		if(hasCode == true){
+			switch(Name){
+				case "Cube0":
+					curNum = 0;
+					break;
+				case "Cube1":
+					curNum = 1;
+					break;
+				case "Cube2":
+					curNum = 2;
+					break;
+				case "Cube3":
+					curNum = 3;
+					break;
+				case "Cube4":
+					curNum = 4;
+					break;
+				case "Cube5":
+					curNum = 5;
+					break;
+				case "Cube6":
+					curNum = 6;
+					break;
+				case "Cube7":
+					curNum = 7;
+					break;
+				case "Cube8":
+					curNum = 8;
+					break;
+				case "Cube9":
+					curNum = 9;
+					break;
+				case "CubeC":
+					if(targetNum1 == 6 && targetNum2 == 3 && targetNum3 == 9){
+						SceneManager.LoadScene(3);
+					}
+					break;
+				case "CubeX":
+					targetNum1 = -1;
+					targetNum2 = -1;
+					targetNum3 = -1;
+					Target1.GetComponent<Renderer>().material = mats[10];
+					Target2.GetComponent<Renderer>().material = mats[10];
+					Target3.GetComponent<Renderer>().material = mats[10];
+					run = false;
+					break;
+			}
+			if(run){
+				if(targetNum1 == -1){
+					Target1.GetComponent<Renderer>().material = mats[curNum];
+					targetNum1 = curNum;
+				}
+				else if(targetNum2 == -1){
+					Target2.GetComponent<Renderer>().material = mats[curNum];
+					targetNum2 = curNum;
+				}
+				else if(targetNum3 == -1){
+					Target3.GetComponent<Renderer>().material = mats[curNum];
+					targetNum3 = curNum;
+				}
+			}
+			else run = true;
+		}
 	}
 }

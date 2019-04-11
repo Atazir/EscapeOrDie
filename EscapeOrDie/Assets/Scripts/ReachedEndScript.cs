@@ -25,7 +25,8 @@ public class ReachedEndScript : MonoBehaviour
 		{
             m_Player.GetComponent<PlayerScript>().KEY1.enabled = true;
 			m_Player.GetComponent<PlayerScript>().HasKey1 = true;
-			Destroy(this.gameObject, 0);
+			this.transform.GetComponent<AudioSource>().Play();
+			Destroy(this.gameObject, 1);
 		}		
 	}
 }

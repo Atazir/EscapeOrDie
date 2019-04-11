@@ -224,6 +224,7 @@ public class ComboLockScript : MonoBehaviour
 					open = true;
 					player.GetComponent<PlayerScript>().HasKey2 = true;
 					player.GetComponent<PlayerScript>().KEY2.enabled = true;
+					this.transform.GetComponent<AudioSource>().Play();
 				}
 		}
 		if(Input.GetAxis("DpadUD") == 0){
