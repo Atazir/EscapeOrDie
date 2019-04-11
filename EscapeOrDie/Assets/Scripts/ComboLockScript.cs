@@ -102,15 +102,15 @@ public class ComboLockScript : MonoBehaviour
 				}
 			}
 		}
-		
-		if(player.GetComponent<PlayerScript>().engaged2 == true){
+
+        if (player.GetComponent<PlayerScript>().engaged2 == true){
 			if(moved == false){
 				transform.localScale = new Vector3(transform.localScale.x * 16, transform.localScale.y * 16, transform.localScale.z * 16);
 				moved = true;
 			}
 			transform.rotation = Quaternion.Lerp(transform.rotation, m_camera.transform.rotation, Time.time * speed);
 			transform.position = Vector3.Lerp(transform.position, m_camera.transform.position + offset, Time.time * speed);
-			offset = transform.forward * 0.75f;
+			offset = transform.forward * 0.85f; //How far away from the player the lock will be
 			transform.Rotate(0.0f,90.0f,90.0f);
 			
 			Interaction();
@@ -129,7 +129,7 @@ public class ComboLockScript : MonoBehaviour
     }
 	
 	void Interaction(){
-		if(Input.GetAxis("DpadLR") < 0 && axisHReset == true){
+		if(Input.GetAxis("DpadLR") < 0 && axisHReset == true || Input.GetKeyDown(KeyCode.LeftArrow)){
 			switch (activeTumbler.name){
 				case "Tumbler1":
 					axisHReset = false;
@@ -148,7 +148,8 @@ public class ComboLockScript : MonoBehaviour
 					break;	
 			}
 		}
-		else if(Input.GetAxis("DpadLR") > 0 && axisHReset == true){
+		else if(Input.GetAxis("DpadLR") > 0 && axisHReset == true || Input.GetKeyDown(KeyCode.RightArrow))
+        {
 			switch (activeTumbler.name){
 				case "Tumbler1":
 					axisHReset = false;
@@ -167,7 +168,8 @@ public class ComboLockScript : MonoBehaviour
 					break;	
 			}
 		}
-		else if(Input.GetAxis("DpadUD") > 0 && axisVReset == true){
+		else if(Input.GetAxis("DpadUD") > 0 && axisVReset == true || Input.GetKeyDown(KeyCode.DownArrow))
+        {
 			switch (activeTumbler.name){
 				case "Tumbler1":
 					if(tumblerNum1 == 0)
@@ -191,7 +193,8 @@ public class ComboLockScript : MonoBehaviour
 			activeTumbler.transform.Rotate(0.0f,36.0f,0.0f);
 			axisVReset = false;
 		}
-		else if(Input.GetAxis("DpadUD") < 0 && axisVReset == true){
+		else if(Input.GetAxis("DpadUD") < 0 && axisVReset == true || Input.GetKeyDown(KeyCode.UpArrow))
+        {
 			switch (activeTumbler.name){
 				case "Tumbler1":
 					if(tumblerNum1 == 9)
@@ -219,14 +222,15 @@ public class ComboLockScript : MonoBehaviour
 			Debug.Log(tumblerNum1);
 			Debug.Log(tumblerNum2);
 			Debug.Log(tumblerNum3);
-				if(tumblerNum1 == nums[0] && tumblerNum2 == nums[1] && tumblerNum3 == nums[2]){
-					Debug.Log("Opens");
-					open = true;
-					player.GetComponent<PlayerScript>().HasKey2 = true;
-					player.GetComponent<PlayerScript>().KEY2.enabled = true;
-					this.transform.GetComponent<AudioSource>().Play();
-				}
-		}
+            if (tumblerNum1 == nums[0] && tumblerNum2 == nums[1] && tumblerNum3 == nums[2])
+            {
+                Debug.Log("Opens");
+                open = true;
+                player.GetComponent<PlayerScript>().HasKey2 = true;
+                player.GetComponent<PlayerScript>().KEY2.enabled = true;
+                this.transform.GetComponent<AudioSource>().Play();
+            }
+        }
 		if(Input.GetAxis("DpadUD") == 0){
 			axisVReset = true;
 		}

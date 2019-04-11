@@ -59,6 +59,8 @@ public class PlayerScript : MonoBehaviour
 	public float Cooldown  = 0.25f;//cooldown for screen fade
 	
 	public float Timer;
+
+    public float gameTime = 600.0f;
 	
 	private int layerMask = -1;
 
@@ -108,8 +110,19 @@ public class PlayerScript : MonoBehaviour
 
 	void FixedUpdate()
 	{
-		if(Input.GetButtonDown("Jump")){
-			
+        if(gameTime <= 0)
+        {
+            canMove = false;
+            SceneManager.LoadScene(2);
+        }
+
+        if(started == true)
+        {
+            gameTime -= Time.deltaTime;
+        }
+
+		if(Input.GetButtonDown("Jump") || Input.GetKeyDown(KeyCode.R))
+        {	
 			switch (open)
 			{
 				case true:
@@ -185,9 +198,6 @@ public class PlayerScript : MonoBehaviour
 		if (Input.GetButtonDown("Fire1"))
         {	
 			Physics.Raycast(transform.position, Camera.transform.TransformDirection(Vector3.forward),out RaycastHit hit1, 2);
-			
-			
-			
 			
 				switch(hit1.transform.tag)
 				{

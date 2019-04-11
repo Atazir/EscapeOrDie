@@ -54,7 +54,7 @@ public class ComboLockScript1 : MonoBehaviour
 			}
 			transform.rotation = Quaternion.Lerp(transform.rotation, m_camera.transform.rotation, Time.time * speed);
 			transform.position = Vector3.Lerp(transform.position, m_camera.transform.position + offset, Time.time * speed);
-			offset = transform.forward * 0.5f;
+			offset = transform.forward * 0.75f;
 			transform.Rotate(0.0f,90.0f,90.0f);
 			
 			Interaction();
@@ -73,7 +73,8 @@ public class ComboLockScript1 : MonoBehaviour
     }
 	
 	void Interaction(){
-		if(Input.GetAxis("DpadLR") < 0 && axisHReset == true){
+		if(Input.GetAxis("DpadLR") < 0 && axisHReset == true || Input.GetKeyDown(KeyCode.LeftArrow))
+        {
 			switch (activeTumbler.name){
 				case "Tumbler1":
 					axisHReset = false;
@@ -93,7 +94,8 @@ public class ComboLockScript1 : MonoBehaviour
 					break;	
 			}
 		}
-		else if(Input.GetAxis("DpadLR") > 0 && axisHReset == true){
+		else if(Input.GetAxis("DpadLR") > 0 && axisHReset == true || Input.GetKeyDown(KeyCode.RightArrow))
+        {
 			switch (activeTumbler.name){
 				case "Tumbler1":
 					axisHReset = false;
@@ -115,7 +117,8 @@ public class ComboLockScript1 : MonoBehaviour
 					break;	
 			}
 		}
-		else if(Input.GetAxis("DpadUD") > 0 && axisVReset == true){
+		else if(Input.GetAxis("DpadUD") > 0 && axisVReset == true || Input.GetKeyDown(KeyCode.DownArrow))
+        {
 			switch (activeTumbler.name){
 				case "Tumbler1":
 					if(tumblerNum1 == 0)
@@ -139,7 +142,8 @@ public class ComboLockScript1 : MonoBehaviour
 			activeTumbler.transform.Rotate(0.0f,36.0f,0.0f);
 			axisVReset = false;
 		}
-		else if(Input.GetAxis("DpadUD") < 0 && axisVReset == true){
+		else if(Input.GetAxis("DpadUD") < 0 && axisVReset == true || Input.GetKeyDown(KeyCode.UpArrow))
+        {
 			switch (activeTumbler.name){
 				case "Tumbler1":
 					if(tumblerNum1 == 9)

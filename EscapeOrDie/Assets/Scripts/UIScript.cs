@@ -28,7 +28,7 @@ public class UIScript : MonoBehaviour
 		player = GameObject.FindGameObjectWithTag("Player");//finds player object
         m_camera = GameObject.FindGameObjectWithTag("MainCamera");//finds camera object
 
-        timerText.text = timer.ToString();
+        timerText.text = player.GetComponent<PlayerScript>().gameTime.ToString();
 
         code1.enabled = false;
         code2.enabled = false;
@@ -39,17 +39,17 @@ public class UIScript : MonoBehaviour
     {
 		transform.rotation = Quaternion.Lerp(transform.rotation, m_camera.transform.rotation, Time.time * speed);
 		transform.position = Vector3.Lerp(transform.position, m_camera.transform.position + offset, Time.time * speed);
-		offset = transform.forward * 1.5f;
+		offset = transform.forward * 2.0f;
         //lerps the canvas toward where the player is looking and pushes forward 0.5
 		if(player.GetComponent<PlayerScript>().started == true){
-			timerText.text = timer.ToString();
-			timer -= Time.deltaTime;
+			timerText.text = player.GetComponent<PlayerScript>().gameTime.ToString();
+			//timer -= Time.deltaTime;
 		}
-        if (timer < 0)
-        {
-            timerText.text = "00:00";
-            GameOver();
-        }
+        //if (timer < 0)
+        //{
+        //    timerText.text = "00:00";
+        //    GameOver();
+        //}
 	}
 
     public void GameOver()
